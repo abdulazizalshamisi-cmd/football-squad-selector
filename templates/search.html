@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <style>
+        body { background-color: green; color: white; font-family: Arial; text-align: center; }
+        .result { background: rgba(0,0,0,0.4); margin: 10px auto; padding: 10px; width: 300px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Search results for "{{ query }}"</h1>
+    <a href="/">Back to home</a>
+
+    {% for p in results %}
+    <div class="result">
+        {{ p['name'] }} — {{ p['category'] }} — Power: {{ p['power'] }}
+        <form action="/add" method="get" style="display:inline;">
+            <input type="hidden" name="name" value="{{ p['name'] }}">
+            <button type="submit">Add</button>
+        </form>
+    </div>
+    {% endfor %}
+</body>
+</html>

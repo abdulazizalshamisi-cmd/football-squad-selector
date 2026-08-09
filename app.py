@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify, session, redirect
 import json
 
 app = Flask(__name__)
+app.secret_key = "any_random_string_here"
 
 formations = {
     "422": {"DEF": 4, "MID": 4, "FWD": 2},
@@ -32,8 +33,34 @@ def best_player(players, category, count):
     sorted_group = sorted(group, key=lambda x: x["power"], reverse=True)
     return sorted_group[:count]
 
+def search_players(players, query):
+    results = [p for p in players if query.lower() in p["name"].lower()]
+    return results
+
+
+
 
 fm =[]
+@app.route("/search")
+def search():
+    with open("players_real.json", "r") as f:
+        players = json.load(f)
+    query = request.args.get("q", "")
+    results = search_players(players, query)
+    return render_template("search.html", results=results, query=query)
+
+@app.route("/add")
+def add_player():
+    name = request.args.get("name", "")
+    
+    if "selected_players" not in session:
+        session["selected_players"] = []
+    
+    if name not in session["selected_players"]:
+        session["selected_players"].append(name)
+        session.modified = True
+    
+    return redirect("/")
 
 @app.route("/")
 def home():
@@ -56,10 +83,13 @@ def home():
     MID = best_player(team_players, "MID", setup["MID"])
     FWD = best_player(team_players, "FWD", setup["FWD"])
 
+    added_players = session.get("selected_players", [])
+
     return render_template("index.html", GK=GK, DEF=DEF, MID=MID, FWD=FWD,
                             formations=formations, selected_formation=selected_formation,
                             national_teams=national_teams, clubs=clubs,
-                            selected_type=selected_type, selected_name=selected_name)
+                            selected_type=selected_type, selected_name=selected_name,
+                            added_players=added_players)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -81,10 +81,18 @@
         }
     </style>
 </head>
+<h2>My Added Players</h2>
+{% for name in added_players %}
+<p>{{ name }}</p>
+{% endfor %}
 <body>
     <h1>Welcom to Football App</h1>
     <div class="container">
         <div class="sidebar">
+            <form action="/search" method="get">
+                <input type="text" name="q" placeholder="Search player...">
+                <button type="submit">Search</button>
+            </form>
             {% if selected_type == "none" %}
             <a href="/?type=club">club</a>
             <a href="/?type=national">national</a>

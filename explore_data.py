@@ -26,4 +26,3 @@ print(df.head())
 
 df.to_json("players_real.json", orient="records")
 
-
