@@ -19,7 +19,10 @@ for club in clubs:
 print(df.columns)
 print(df.shape)
 print(df["Position"].unique())
-
+print(df["Overall_Rating"].mean())
+print(df["Age"].corr(df["Overall_Rating"]))
+print(df[df["Age"] < 28].shape[0])
+print(df[df["Age"] >= 28].shape[0])
 
 plt.scatter(df["Age"], df["Overall_Rating"])
 plt.xlabel("Age")
